@@ -41,24 +41,25 @@ int main(int argc, char *argv[]) {
 		//    if(i>N/2-1) x[i]=sin(5.0*twopi*i/N*2.0);//+sin(10.0*twopi*i/N*2.0))/3.0;
 		//    x[i]=sin(twopi*i/N);//+sin(10.0*twopi*i/N*2.0))/3.0;
 
-		i = ind * 2 * twopi / N;
+		i = ind * 2 * twopi / (N-1);
 
 		// first one
-		if (strcmp(argv[1], "first") == 0) {
-			x[ind] = ( sin(2*i/N) + sin(4*i/N) + sin(5*i/(N*2)) ) / 3;
+		if (atoi(argv[1]) == 1) {
+			x[ind] = ( sin(2*i) + sin(4*i) + sin(5*i) ) / 3;
 		}
 		// second one
-		if (strcmp(argv[1], "second") == 0) {
+		if (atoi(argv[1]) == 2) {
 			if (i < twopi/2) {
-				x[i] = sin(2*i/N);
+				x[ind] = sin(2*i);
 			}
 			else if (i < twopi) {
-				x[i] = sin(4*i/N);
+				x[ind] = sin(4*i);
 			}
-			else x[i] = sin(5*i/N);
+			else {
+				x[ind] = sin(5*i);
+			}
 		}
-
-		xoriginal[i]=x[i]; //here I keep a copy of the original data since WT replaces x[:]
+		xoriginal[ind]=x[ind]; //here I keep a copy of the original data since WT replaces x[:]
 	}
 
 	//file with data
@@ -66,7 +67,6 @@ int main(int argc, char *argv[]) {
 	datain.open("input.dat");
 	for(i=0;i<N;i++) datain << x[i] << endl;
 	datain.close();
-
 
 	//this this the way numerical recipes works
 
@@ -81,24 +81,28 @@ int main(int argc, char *argv[]) {
 	//this is the way daubechies is computed (note the +1 for "forward")
 	wt1(x,+1,Wave2);
 
-
 	//filter (this example simply removes all the WT data in the first half of the vector)
 	double threshold=0.1;
 	int nnz=0;
 	for(int i=0;i<N;i++){
-		//      if(abs(x[i])<threshold) {
-		if(i<N/2) {
-			x2[i]=0.0;
+		if(abs(x[i])<threshold) {
+		// if(i<N/2) {
+		x2[i]=0.0;
 		}
-		else
-			{
+		else {
 				nnz++;
 				x2[i]=x[i];
 			}
-    
 	}
 	cout << "Threshold used =" << threshold <<endl;
 	cout << "Number of non-zero coefficients =" << nnz << endl;
+
+	// output original wave
+	ofstream orig;
+	orig.open("orig.dat");
+	for(i=0;i<N;i++) orig << xoriginal[i] << endl;
+	orig.close();
+
 	//output filtered data
 	ofstream dataout;
 	dataout.open("waveout.dat");
@@ -113,7 +117,7 @@ int main(int argc, char *argv[]) {
 
 	//output the data
 	dataout.open("output2.dat");
-	for(i=0;i<N;i++) dataout << abs(x2[i]-xoriginal[i]) << " " << x2[i] << endl;
+	for(i=0;i<N;i++) dataout << 5*(x2[i]-xoriginal[i]) << " " << x2[i] << endl;
 	dataout.close();
 
 }
