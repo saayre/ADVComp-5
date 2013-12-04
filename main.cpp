@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 			x[ind] = ( sin(2*i) + sin(4*i) + sin(5*i) ) / 3;
 		}
 		// second one
-		if (atoi(argv[1]) == 2) {
+		else if (atoi(argv[1]) == 2) {
 			if (i < twopi/2) {
 				x[ind] = sin(2*i);
 			}
@@ -58,6 +58,9 @@ int main(int argc, char *argv[]) {
 			else {
 				x[ind] = sin(5*i);
 			}
+		}
+		else if (atoi(argv[1]) == 3) {
+			x[ind] = sin(2*i);
 		}
 		xoriginal[ind]=x[ind]; //here I keep a copy of the original data since WT replaces x[:]
 	}
