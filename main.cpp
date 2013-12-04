@@ -17,8 +17,9 @@ double randDouble(double low, double high)
 	return temp;
 }
 
-int main() {
-	int i,n=4, N=256;
+int main(int argc, char *argv[]) {
+	int ind,n=4, N=256;
+	double i;
 	int power=1;
 	VecDoub x(N);
 	VecDoub xoriginal(N);
@@ -40,14 +41,22 @@ int main() {
 		//    if(i>N/2-1) x[i]=sin(5.0*twopi*i/N*2.0);//+sin(10.0*twopi*i/N*2.0))/3.0;
 		//    x[i]=sin(twopi*i/N);//+sin(10.0*twopi*i/N*2.0))/3.0;
 
-		int i = ind * 2 * twopi / N;
+		i = ind * 2 * twopi / N;
 
 		// first one
-		x[i] = ( sin(2*i/N) + sin(4*i/N) + sin(5*i/(N*2)) ) / 3;
+		if (strcmp(argv[1], "first") == 0) {
+			x[ind] = ( sin(2*i/N) + sin(4*i/N) + sin(5*i/(N*2)) ) / 3;
+		}
 		// second one
-		// if (i < twopi/2) x[i] = sin(2*i/N);
-		// else (i < twopi) x[i] = sin(4*i/N);
-		// else sin(5*i/N);
+		if (strcmp(argv[1], "second") == 0) {
+			if (i < twopi/2) {
+				x[i] = sin(2*i/N);
+			}
+			else if (i < twopi) {
+				x[i] = sin(4*i/N);
+			}
+			else x[i] = sin(5*i/N);
+		}
 
 		xoriginal[i]=x[i]; //here I keep a copy of the original data since WT replaces x[:]
 	}
